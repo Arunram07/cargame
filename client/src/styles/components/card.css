@@ -1,0 +1,24 @@
+.players_card {
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border-radius: 5px;
+  max-width: 200px;
+  width: 100%;
+}
+
+.speed_variants {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.speed {
+  height: 20px;
+  background: blue;
+}
+
+.damage {
+  height: 20px;
+  background: orange;
+}
