@@ -3,6 +3,10 @@ import steering from "./steering.png";
 import mirror from "./mirror.png";
 import background from "./background.mp4";
 import Card from "./components/card";
+import io from "socket.io-client";
+
+let socket;
+const PORT = "http://localhost:5000";
 
 const App = () => {
   const [speed, setSpeed] = useState(0);
@@ -19,10 +23,29 @@ const App = () => {
   ];
   const players = [1, 2, 3, 4, 5, 6, 7];
 
+  useEffect(() => {
+    socket = io(PORT, { transports: ["websocket"] });
+
+    socket.on("connection", () => {
+      console.log("someone connected");
+    });
+  }, []);
+
+  useEffect(() => {
+    socket.on("newuser", (id) => console.log(id));
+  }, []);
+
+  useEffect(() => {
+    socket.on("updateSpeed", ({ speedData }) => console.log(speedData));
+  }, []);
+
   const handleKeyDownEvent = (key, e) => {
     e.preventDefault();
     if (key === "ArrowUp") {
-      if (speed < 160) setSpeed(speed + 1);
+      if (speed < 160) {
+        setSpeed(speed + 1);
+        socket.emit("update", { speed });
+      }
     }
     if (key === "ArrowDown") {
       if (speed > 0) setSpeed(speed - 1);
@@ -38,7 +61,9 @@ const App = () => {
   const handleKeyEndEvent = (key, e) => {
     e.preventDefault();
     if (key === "ArrowUp") {
-      console.log(speed);
+      for (var i = speed; i >= 0; i--) {
+        setSpeed(i);
+      }
     }
     if (key === "ArrowLeft") {
       setDeg(0);
